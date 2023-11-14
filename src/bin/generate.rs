@@ -2,6 +2,7 @@ use age::cli_common::read_secret;
 use age::cli_common::Passphrase;
 use blake2::{Blake2s, Digest};
 use ethers::signers::{LocalWallet, Signer};
+use ethers_core::rand::thread_rng;
 use futures::executor::block_on;
 use gumdrop::Options;
 use rand::rngs::OsRng;
@@ -92,7 +93,7 @@ fn main() {
     hasher.update(entropy.expose_secret().as_bytes());
     hasher.update(plumo_seed.expose_secret());
 
-    let private_key = LocalWallet::new(&mut rng);
+    let private_key = LocalWallet::new(&mut thread_rng());
     let attestation_signature = block_on(private_key.sign_message(&attestation_message))
         .expect("Should have signed attestation");
     let address = address_to_string(&private_key.address());

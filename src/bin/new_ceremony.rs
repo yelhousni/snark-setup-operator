@@ -2,6 +2,7 @@ use algebra::{Bls12_377, PairingEngine, BW6_761};
 use anyhow::{anyhow, Result};
 use ethers::core::k256::ecdsa::SigningKey;
 use ethers::signers::LocalWallet;
+use ethers::signers::Signer;
 use gumdrop::Options;
 use phase1::{ContributionMode, Phase1Parameters, ProvingSystem};
 #[allow(unused_imports)]
@@ -126,7 +127,7 @@ async fn run<E: PairingEngine>(opts: &NewCeremonyOpts, private_key: &[u8]) -> Re
         .await?;
     let ceremony: Ceremony = serde_json::from_str::<Response<Ceremony>>(&data)?.result;
     let deployer = opts.deployer.clone();
-    let private_key = LocalWallet::from(SigningKey::new(private_key)?);
+    let private_key = LocalWallet::from(SigningKey::from_bytes(private_key)?);
     if address_to_string(&private_key.address()) != deployer {
         return Err(anyhow!("Deployer must match the private key"));
     }

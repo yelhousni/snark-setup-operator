@@ -1,3 +1,4 @@
+use ethers::signers::Signer;
 use snark_setup_operator::data_structs::{
     Attestation, ChunkDownloadInfo, ContributedData, ContributionUploadUrl, FilteredChunks,
     SignedData, UnlockBody, VerifiedData,
@@ -202,7 +203,7 @@ impl Contribute {
         private_key: &[u8],
         attestation: &Attestation,
     ) -> Result<Self> {
-        let private_key = LocalWallet::from(SigningKey::new(private_key)?);
+        let private_key = LocalWallet::from(SigningKey::from_bytes(private_key)?);
         let phase = match &opts.phase {
             Some(phase) => Some(string_to_phase(phase)?),
             _ => None,

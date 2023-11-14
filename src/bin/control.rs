@@ -249,7 +249,7 @@ impl Control {
             (_, _) => None,
         };
 
-        let private_key = LocalWallet::from(SigningKey::new(private_key)?);
+        let private_key = LocalWallet::from(SigningKey::from_bytes(private_key)?);
         let control = Self {
             phase: phase,
             server_url: server_url,
