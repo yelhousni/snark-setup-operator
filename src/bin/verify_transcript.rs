@@ -13,6 +13,7 @@ use setup_utils::{
 };
 use snark_setup_operator::data_structs::Ceremony;
 use snark_setup_operator::transcript_data_structs::Transcript;
+use snark_setup_operator::utils::download_file;
 use snark_setup_operator::{
     error::VerifyTranscriptError,
     utils::{
@@ -431,20 +432,9 @@ impl TranscriptVerifier {
                     info!("Checked first response hash");
 
                     let contributed_location = contribution.contributed_location()?;
+                    // print the contribution location
                     // Download the response computed by the participant.
-                    if contributed_location.contains("blob.core.windows.net") {
-                        let length = rt.block_on(get_content_length(&contributed_location))?;
-                        rt.block_on(download_file_from_azure_async(
-                            &contributed_location,
-                            length,
-                            RESPONSE_FILENAME,
-                        ))?;
-                    } else {
-                        rt.block_on(download_file_direct_async(
-                            &contributed_location,
-                            RESPONSE_FILENAME,
-                        ))?;
-                    };
+                    download_file(&contributed_location, RESPONSE_FILENAME)?;
 
                     // Run verification between challenge and response, and produce the next new
                     // challenge. Skip both subgroup and ratio checks if below round threshold.
